@@ -1,7 +1,7 @@
 FROM node:10
 
 # Create app directory
-WORKDIR /usr/src/WaterMe_MQTT_Client
+WORKDIR /usr/src/WaterMeMQTTClient
 
 # Install app dependencies
 COPY package*.json ./
