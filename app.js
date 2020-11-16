@@ -6,10 +6,6 @@ require('log-timestamp');
 
 const main_topic = "WaterMe";
 
-if (environment_v.error) {
-  throw environment_v.error
-}
-
 mongoose.set('useFindAndModify', false);
 //mongoose.set('debug', true);
 
