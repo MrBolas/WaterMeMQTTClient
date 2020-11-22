@@ -1,6 +1,6 @@
 const environment_v = require('dotenv').config()
 const mongoose = require('mongoose');
-const MicroController = require("./models/microController");
+const MicroController = require('@mrballs/watermesettings');
 var mqtt = require('mqtt');
 require('log-timestamp');
 
@@ -24,6 +24,37 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   console.log("Database connected.")
 });
+
+
+function getSensorThresholds(received_message) {
+  
+  let watering_threshold = {
+    max: 100,
+    min: 0
+  } 
+  // Setup sensor threshold
+  if (received_message.type.includes('temp')) {
+    //thresholds for temperature sensor
+    watering_threshold.max = 23;
+    watering_threshold.min = 13;
+  }
+  else if(received_message.includes('DHT'))
+  {
+    //thresholds for humidity sensor
+    watering_threshold.max = 80;
+    watering_threshold.min = 0;
+  }
+  else if( received_message.type.includes('SMS'))
+  {
+    //thresholds for Soil Moisture Sensor
+    watering_threshold.max = 1;
+    watering_threshold.min = 2;
+  }
+
+  return watering_threshold;
+}
+
+
 
 //var client  = mqtt.connect("mqtt://test.mosquitto.org",{port:1883});
 var client  = mqtt.connect(`mqtt://${process.env.MQTT_BROKER}`,{port:1883});
@@ -71,11 +102,16 @@ client.on('message', function (topic, message) {
   .then(controller => {
     //if cant find controller
     if (controller == null) {
+
+      // Gets watering thresholds for the respective sensor
+      let watering_threshold = getSensorThresholds(received_sensor_register);
+
       //if did not found controller => create controller in the dB
       let new_controller = new MicroController({
         mac_address: received_sensor_register.mac_address,
         sensors: {
           type: received_sensor_register.type,
+          watering_threshold,
           readings: {
             time: received_sensor_register.time,
             value: received_sensor_register.value
@@ -83,11 +119,6 @@ client.on('message', function (topic, message) {
         }
     })
       // saves new controller in database
-      /*
-      console.log(`Added new Microcontroller with ID: ${new_controller.mac_address}`);
-      console.log(`Added new Sensor with Type: ${new_controller.sensors[0].type}`);
-      console.log(`Added new Sensor Reading for Sensor: ${new_controller.sensors[0].type}`);
-      */
       new_controller.save();
       return;
     }
@@ -115,8 +146,12 @@ client.on('message', function (topic, message) {
     {
       let controller_sensors = controller.sensors;
 
+      // Gets watering thresholds for the respective sensor
+      let watering_threshold = getSensorThresholds(received_sensor_register);
+
       let new_sensor = {
         type: received_sensor_register.type,
+        watering_threshold,
         readings: {
           time: received_sensor_register.time,
           value: received_sensor_register.value
