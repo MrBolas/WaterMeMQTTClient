@@ -10,10 +10,10 @@
   "author": "JBS",
   "license": "ISC",
   "dependencies": {
-    "@mrballs/watermesettings": "^1.0.0",
+    "@mrballs/watermesettings": "^1.0.4",
     "dotenv": "^8.2.0",
     "log-timestamp": "^0.3.0",
-    "mongoose": "^5.10.13",
-    "mqtt": "^4.2.4"
+    "mongoose": "^5.10.15",
+    "mqtt": "^4.2.5"
   }
 }

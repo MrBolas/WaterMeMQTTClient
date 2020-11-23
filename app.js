@@ -25,7 +25,6 @@ db.once('open', function() {
   console.log("Database connected.")
 });
 
-
 function getSensorThresholds(received_message) {
   
   let watering_threshold = {
@@ -53,8 +52,6 @@ function getSensorThresholds(received_message) {
 
   return watering_threshold;
 }
-
-
 
 //var client  = mqtt.connect("mqtt://test.mosquitto.org",{port:1883});
 var client  = mqtt.connect(`mqtt://${process.env.MQTT_BROKER}`,{port:1883});
