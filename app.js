@@ -1,6 +1,6 @@
 const environment_v = require('dotenv').config()
 const mongoose = require('mongoose');
-const MicroController = require('@mrballs/watermesettings');
+const MicroController = require('@mrballs/watermesettings/models/microController');
 var mqtt = require('mqtt');
 require('log-timestamp');
 
@@ -37,7 +37,7 @@ function getSensorThresholds(received_message) {
     watering_threshold.max = 23;
     watering_threshold.min = 13;
   }
-  else if(received_message.includes('DHT'))
+  else if(received_message.type.includes('hum'))
   {
     //thresholds for humidity sensor
     watering_threshold.max = 80;
@@ -46,15 +46,15 @@ function getSensorThresholds(received_message) {
   else if( received_message.type.includes('SMS'))
   {
     //thresholds for Soil Moisture Sensor
-    watering_threshold.max = 1;
-    watering_threshold.min = 2;
+    watering_threshold.max = 2;
+    watering_threshold.min = 1;
   }
 
   return watering_threshold;
 }
 
 //var client  = mqtt.connect("mqtt://test.mosquitto.org",{port:1883});
-var client  = mqtt.connect(`mqtt://${process.env.MQTT_BROKER}`,{port:1883});
+var client  = mqtt.connect(`mqtt://${process.env.MQTT_BROKER_IP}`,{port:`${process.env.MQTT_BROKER_PORT}`});
 
 client.on("connect",function(){	
   client.subscribe(main_topic, function (err) {
