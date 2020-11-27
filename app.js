@@ -34,8 +34,8 @@ function getSensorThresholds(received_message) {
   // Setup sensor threshold
   if (received_message.type.includes('temp')) {
     //thresholds for temperature sensor
-    watering_threshold.max = 23;
-    watering_threshold.min = 13;
+    watering_threshold.max = 28;
+    watering_threshold.min = 8;
   }
   else if(received_message.type.includes('hum'))
   {
@@ -46,8 +46,8 @@ function getSensorThresholds(received_message) {
   else if( received_message.type.includes('SMS'))
   {
     //thresholds for Soil Moisture Sensor
-    watering_threshold.max = 2;
-    watering_threshold.min = 1;
+    watering_threshold.max = 2.3;
+    watering_threshold.min = 0.7;
   }
 
   return watering_threshold;
