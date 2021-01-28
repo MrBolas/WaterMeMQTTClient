@@ -59,27 +59,31 @@ var client  = mqtt.connect(`mqtt://${process.env.MQTT_BROKER_IP}`,{port:`${proce
 client.on("connect",function(){	
   client.subscribe(main_topic, function (err) {
     if (!err) {
-      console.log('WaterMe subscribed');
-      client.publish(main_topic, 'MQTT Server worker subscribed');
+      console.log(`Connection to ${main_topic} subscribed.`);
+      client.publish(main_topic, 'MQTT Server subscribed');
     }
   })
 })
 
 client.on('message', function (topic, message) {
   // message is Buffer
-  console.log(`${topic} ${message}`)
+  console.log(`\nReceived Topic: ${topic}\n Received Message: ${message}`)
 
   if (topic == "WaterMe") {
     client.subscribe(message.toString(), function (err) {
       if (!err) {
         console.log(`${message.toString()} Subscribed.`);
         //client.publish(temperature_topic, 'Received Temperature')
+      }else{
+        console.error(`Error on message:\n ${message}`);
       }
     })
+    // On sucessful topic subscription leave
+    return;
   }
 
   let received_sensor_register;
-  /*
+  /* Message format
   let received_sensor_register = {
     mac_address: <>,
     type: <>,
@@ -91,7 +95,7 @@ client.on('message', function (topic, message) {
   try{
     received_sensor_register = JSON.parse(message);
   } catch (err) {
-    console.log(`${err} : ${message}`);
+    console.log(`Parsing Error:\n${err} -> On Message -> ${message}`);
     return;
   }
 

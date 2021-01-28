@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start_mqtt_client": "node app.js",
+    "start:mqtt_client": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JBS",
