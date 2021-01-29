@@ -11,4 +11,4 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-CMD [ "npm", "run", "start_mqtt_client" ]
+CMD [ "npm", "run", "start:mqtt_client" ]
